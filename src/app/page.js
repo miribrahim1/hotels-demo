@@ -6,16 +6,26 @@ import Hero from '@/components/Hero';
 import Highlights from '@/components/Highlights';
 import RoomsPreview from '@/components/RoomsPreview';
 import Testimonials from '@/components/Testimonials';
+import { getRooms, getAmenities, getTestimonials } from '@/lib/appwrite';
+export default async function Home() {
 
-export default function Home() {
+  const rowRooms = await getRooms();
+  const rooms = JSON.parse(JSON.stringify(rowRooms));
+
+  const rawAmenities = await getAmenities();
+  const amenities = JSON.parse(JSON.stringify(rawAmenities));
+
+  const rawTestimonials = await getTestimonials();
+  const testimonials = JSON.parse(JSON.stringify(rawTestimonials));
+
   return (
     <main>
       <Hero />
       <Highlights />
-      <RoomsPreview />
-      <Amenities />
+      <RoomsPreview rooms={rooms} />
+      <Amenities amenitiesList={amenities} />
       <Gallery />
-      <Testimonials />
+      <Testimonials testimonials={testimonials} />
       <BookingForm />
       <Footer />
     </main>

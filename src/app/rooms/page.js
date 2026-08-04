@@ -1,8 +1,11 @@
-// src/app/rooms/page.js
-import Link from 'next/link';
-import { rooms } from '@/data/hotelData';
 
-export default function RoomsPage() {
+import Link from 'next/link';
+import { getRooms } from '@/lib/appwrite';
+
+export default async function RoomsPage() {
+  const rawRooms = await getRooms();
+  const rooms = JSON.parse(JSON.stringify(rawRooms));
+
   return (
     <main className="min-h-screen bg-white pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">

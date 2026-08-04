@@ -2,17 +2,20 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Users, Maximize, Check } from 'lucide-react';
-import { rooms } from '@/data/hotelData';
+import { getRoomBySlug, getRooms } from '@/lib/appwrite';
 
 export default async function RoomDetailPage({ params }) {
   const { slug } = await params;
-  const room = rooms.find((r) => r.slug === slug);
 
-  if (!room) {
+  const rawRoom = await getRoomBySlug(slug);
+  if (!rawRoom) {
     notFound();
   }
+  const room = JSON.parse(JSON.stringify(rawRoom));
 
-  const otherRooms = rooms.filter((r) => r.slug !== slug).slice(0, 2);
+  const rawAllRooms = await getRooms();
+  const allRooms = JSON.parse(JSON.stringify(rawAllRooms));
+  const otherRooms = allRooms.filter((r) => r.slug !== slug).slice(0, 2);
 
   return (
     <main className="min-h-screen bg-white pt-28 pb-20">

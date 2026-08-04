@@ -3,9 +3,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { rooms } from '@/data/hotelData';
+// import { rooms } from '@/data/hotelData';
 
-export default function RoomsPreview() {
+export default function RoomsPreview({ rooms }) {
   const [featured, ...rest] = rooms;
 
   return (

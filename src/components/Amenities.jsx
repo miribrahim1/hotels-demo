@@ -1,13 +1,13 @@
-// src/components/Amenities.jsx
+
 'use client';
 
 import { motion } from 'framer-motion';
 import { Wifi, Waves, UtensilsCrossed, Clock, Sparkles, Car } from 'lucide-react';
-import { amenitiesList } from '@/data/hotelData';
+
 
 const ICONS = [Wifi, Waves, UtensilsCrossed, Clock, Sparkles, Car];
 
-export default function Amenities() {
+export default function Amenities({ amenitiesList }) {
   return (
     <section className="bg-gray-50 py-24 px-6">
       <div className="max-w-6xl mx-auto">

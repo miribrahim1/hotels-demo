@@ -16,14 +16,28 @@ export default function BookingForm() {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log('Booking request:', data);
+    const message = `Hi! I'd like to book a room at The Verandah.
+
+Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone}
+Guests: ${data.guests}
+Check-in: ${data.checkIn}
+Check-out: ${data.checkOut}`;
+
+    const whatsappNumber = '919635320549'; // replace with your real WhatsApp business number
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    window.open(whatsappUrl, '_blank');
+
     setSubmitted(true);
     reset();
     setTimeout(() => setSubmitted(false), 4000);
   };
 
   return (
-    <section className="bg-gray-50 py-24 px-6">
+    <section id="booking" className="bg-gray-50 py-24 px-6">
       <div className="max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

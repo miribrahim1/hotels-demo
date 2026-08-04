@@ -1,12 +1,11 @@
-// src/components/Testimonials.jsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
-import { testimonials } from '@/data/hotelData';
 
-export default function Testimonials() {
+export default function Testimonials({ testimonials }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
