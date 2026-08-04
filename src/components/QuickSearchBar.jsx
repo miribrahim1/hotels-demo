@@ -115,8 +115,19 @@ export default function QuickSearchBar() {
     }, []);
 
     const handleCheck = () => {
-        const bookingSection = document.getElementById('booking');
-        if (bookingSection) bookingSection.scrollIntoView({ behavior: 'smooth' });
+        const message = `Hi The Verandah! 👋 I'm planning a stay and would love to check availability.
+
+📅 Check-in: ${checkIn ? formatDate(checkIn) : 'Not selected yet'}
+📅 Check-out: ${checkOut ? formatDate(checkOut) : 'Not selected yet'}
+👥 Guests: ${guests}
+
+Could you let me know what's available for these dates?`;
+
+        const whatsappNumber = '919635320549';
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+        window.open(whatsappUrl, '_blank');
     };
 
     return (
