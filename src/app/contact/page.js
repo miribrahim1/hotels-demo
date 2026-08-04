@@ -16,7 +16,19 @@ export default function ContactPage() {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log('Contact form:', data);
+    const message = `Hi The Verandah! I have a question.
+
+Name: ${data.name}
+Email: ${data.email}
+
+Message: ${data.message}`;
+
+    const whatsappNumber = '919635320549';
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    window.open(whatsappUrl, '_blank');
+
     setSubmitted(true);
     reset();
     setTimeout(() => setSubmitted(false), 4000);
