@@ -3,10 +3,10 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-// import { rooms } from '@/data/hotelData';
+import Image from 'next/image';
 
 export default function RoomsPreview({ rooms }) {
-  const [featured, ...rest] = rooms;
+  const preview = rooms.slice(0, 3);
 
   return (
     <section className="bg-gray-50 py-24 px-6">
@@ -34,16 +34,10 @@ export default function RoomsPreview({ rooms }) {
           </Link>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Featured large card */}
-          <RoomCard room={featured} index={0} large />
-
-          {/* Two smaller stacked cards */}
-          <div className="grid grid-rows-2 gap-6">
-            {rest.map((room, i) => (
-              <RoomCard key={room.slug} room={room} index={i + 1} />
-            ))}
-          </div>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {preview.map((room, i) => (
+            <RoomCard key={room.slug} room={room} index={i} />
+          ))}
         </div>
 
         <motion.div
@@ -65,7 +59,7 @@ export default function RoomsPreview({ rooms }) {
   );
 }
 
-function RoomCard({ room, index, large = false }) {
+function RoomCard({ room, index }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -75,15 +69,13 @@ function RoomCard({ room, index, large = false }) {
       className="group"
     >
       <Link href={`/rooms/${room.slug}`} className="block h-full">
-        <div
-          className={`relative overflow-hidden rounded-2xl ${
-            large ? 'aspect-[4/5] md:h-full' : 'aspect-[16/9]'
-          }`}
-        >
-          <img
+        <div className="relative overflow-hidden rounded-2xl aspect-[4/5]">
+          <Image
             src={room.image}
             alt={room.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 

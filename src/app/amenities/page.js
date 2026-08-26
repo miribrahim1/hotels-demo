@@ -1,10 +1,25 @@
 // src/app/amenities/page.js
+import Image from 'next/image';
 import { Wifi, Waves, UtensilsCrossed, Clock, Sparkles, Car } from 'lucide-react';
-import { amenitiesList, heroJourney } from '@/data/hotelData';
+import { heroJourney, heroFinal } from '@/data/hotelData';
+import { getAmenities } from '@/lib/appwrite';
 
 const ICONS = [Wifi, Waves, UtensilsCrossed, Clock, Sparkles, Car];
+// heroJourney only has 5 photos — append the night exterior so a 6th
+// amenity doesn't wrap around and repeat the first photo.
+const AMENITY_IMAGES = [...heroJourney, { image: heroFinal.night }];
 
-export default function AmenitiesPage() {
+export const metadata = {
+  title: 'Amenities',
+  description: 'Discover the amenities at The Verandah — pool, garden dining, spa, and more.',
+};
+
+export const revalidate = 60;
+
+export default async function AmenitiesPage() {
+  const rawAmenities = await getAmenities();
+  const amenitiesList = JSON.parse(JSON.stringify(rawAmenities));
+
   return (
     <main className="min-h-screen bg-white">
       {/* Page header */}
@@ -21,7 +36,7 @@ export default function AmenitiesPage() {
       <div className="max-w-6xl mx-auto px-6 pb-24">
         {amenitiesList.map((item, i) => {
           const Icon = ICONS[i % ICONS.length];
-          const img = heroJourney[i % heroJourney.length];
+          const img = AMENITY_IMAGES[i % AMENITY_IMAGES.length];
           const reversed = i % 2 !== 0;
 
           return (
@@ -34,10 +49,12 @@ export default function AmenitiesPage() {
               {/* Image */}
               <div className="w-full md:w-1/2">
                 <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-                  <img
+                  <Image
                     src={img.image}
                     alt={item.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
                   />
                 </div>
               </div>

@@ -1,4 +1,5 @@
 // src/components/Footer.jsx
+import Link from 'next/link';
 import { MapPin, Phone, Mail, Share2, Link2, AtSign } from 'lucide-react';
 import { hotelInfo } from '@/data/hotelData';
 
@@ -47,9 +48,9 @@ export default function Footer() {
             <ul className="space-y-3">
               {QUICK_LINKS.map((link) => (
                 <li key={link.href}>
-                  <a href={link.href} className="text-white/70 text-sm hover:text-white transition-colors">
+                  <Link href={link.href} className="text-white/70 text-sm hover:text-white transition-colors">
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

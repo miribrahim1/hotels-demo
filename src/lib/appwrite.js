@@ -56,4 +56,4 @@ export async function getTestimonials() {
   }
 }
 
-export { client, account, databases };
+export { client, account, databases, DATABASE_ID };

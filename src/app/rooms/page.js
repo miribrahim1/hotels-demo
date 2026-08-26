@@ -1,6 +1,14 @@
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { getRooms } from '@/lib/appwrite';
+
+export const metadata = {
+  title: 'Rooms',
+  description: 'Browse all rooms and suites at The Verandah, from garden-view rooms to family suites.',
+};
+
+export const revalidate = 60;
 
 export default async function RoomsPage() {
   const rawRooms = await getRooms();
@@ -20,10 +28,12 @@ export default async function RoomsPage() {
           {rooms.map((room) => (
             <Link key={room.slug} href={`/rooms/${room.slug}`} className="group block">
               <div className="relative overflow-hidden rounded-2xl mb-4 aspect-[4/5]">
-                <img
+                <Image
                   src={room.image}
                   alt={room.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <span className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-medium px-3 py-1.5 rounded-full">

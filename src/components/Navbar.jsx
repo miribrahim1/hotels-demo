@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sparkles } from 'lucide-react';
 import { hotelInfo } from '@/data/hotelData';
@@ -18,12 +19,12 @@ export default function Navbar() {
     const pathname = usePathname();
     const isHome = pathname === '/';
 
-    const [scrolled, setScrolled] = useState(!isHome); // non-home pages start solid
+    const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const isSolid = !isHome || scrolled; // always solid on inner pages, scroll-based on home
 
     useEffect(() => {
         if (!isHome) {
-            setScrolled(true); // always solid on inner pages
             return;
         }
 
@@ -49,14 +50,14 @@ export default function Navbar() {
                 className="fixed top-0 left-0 right-0 z-[100] px-5 pt-5"
             >
                 <div
-                    className={`max-w-6xl mx-auto flex items-center justify-between rounded-full px-6 transition-all duration-500 ${scrolled
+                    className={`max-w-6xl mx-auto flex items-center justify-between rounded-full px-6 transition-all duration-500 ${isSolid
                         ? 'bg-white shadow-[0_8px_30px_rgba(0,0,0,0.12)] py-2.5 border border-black/[0.06]'
                         : 'bg-white/10 backdrop-blur-md border border-white/20 py-3.5'
                         }`}
                 >
-                    <a href="/" className="flex items-center gap-2 group">
+                    <Link href="/" className="flex items-center gap-2 group">
                         <span
-                            className={`grid place-items-center w-8 h-8 rounded-full transition-colors ${scrolled ? 'bg-gray-900' : 'bg-white/20'
+                            className={`grid place-items-center w-8 h-8 rounded-full transition-colors ${isSolid ? 'bg-gray-900' : 'bg-white/20'
                                 }`}
                         >
                             <Sparkles
@@ -65,38 +66,39 @@ export default function Navbar() {
                             />
                         </span>
                         <span
-                            className={`text-lg font-semibold tracking-tight transition-colors ${scrolled ? 'text-gray-900' : 'text-white'
+                            className={`text-lg font-semibold tracking-tight transition-colors ${isSolid ? 'text-gray-900' : 'text-white'
                                 }`}
                         >
                             {hotelInfo.name}
                         </span>
-                    </a>
+                    </Link>
 
                     <div className="hidden md:flex items-center gap-1 relative">
                         {NAV_LINKS.map((link) => (
-                            <a
+                            <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`relative px-4 py-2 text-sm font-medium rounded-full transition-colors ${scrolled ? 'text-gray-700 hover:text-gray-900' : 'text-white/90 hover:text-white'
+                                className={`relative px-4 py-2 text-sm font-medium rounded-full transition-colors ${isSolid ? 'text-gray-700 hover:text-gray-900' : 'text-white/90 hover:text-white'
                                     }`}
                             >
                                 {link.label}
-                            </a>
+                            </Link>
                         ))}
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button
-                            className={`hidden md:inline-flex px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 ${scrolled
+                        <Link
+                            href="/#booking"
+                            className={`hidden md:inline-flex px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 ${isSolid
                                 ? 'bg-gray-900 text-white hover:bg-gray-800'
                                 : 'bg-white text-gray-900 hover:bg-gray-100'
                                 }`}
                         >
                             Book Now
-                        </button>
+                        </Link>
                         <button
                             onClick={() => setMenuOpen(true)}
-                            className={`md:hidden transition-transform hover:scale-110 ${scrolled ? 'text-gray-900' : 'text-white'
+                            className={`md:hidden transition-transform hover:scale-110 ${isSolid ? 'text-gray-900' : 'text-white'
                                 }`}
                             aria-label="Open menu"
                         >
@@ -122,21 +124,28 @@ export default function Navbar() {
                         </div>
                         <div className="flex flex-col gap-2 px-5 mt-6">
                             {NAV_LINKS.map((link, i) => (
-                                <motion.a
+                                <motion.div
                                     key={link.href}
-                                    href={link.href}
-                                    onClick={() => setMenuOpen(false)}
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: i * 0.06 }}
-                                    className="text-3xl font-medium text-gray-900 py-2"
                                 >
-                                    {link.label}
-                                </motion.a>
+                                    <Link
+                                        href={link.href}
+                                        onClick={() => setMenuOpen(false)}
+                                        className="text-3xl font-medium text-gray-900 py-2 block"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </motion.div>
                             ))}
-                            <button className="mt-6 bg-gray-900 text-white px-6 py-3 rounded-full font-medium w-fit hover:bg-gray-800 hover:scale-105 active:scale-95 transition-all">
+                            <Link
+                                href="/#booking"
+                                onClick={() => setMenuOpen(false)}
+                                className="mt-6 bg-gray-900 text-white px-6 py-3 rounded-full font-medium w-fit hover:bg-gray-800 hover:scale-105 active:scale-95 transition-all"
+                            >
                                 Book Now
-                            </button>
+                            </Link>
                         </div>
                     </motion.div>
                 )}

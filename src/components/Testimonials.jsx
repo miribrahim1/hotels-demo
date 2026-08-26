@@ -13,7 +13,7 @@ export default function Testimonials({ testimonials }) {
       setIndex((i) => (i + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [testimonials.length]);
 
   const current = testimonials[index];
 
@@ -52,7 +52,7 @@ export default function Testimonials({ testimonials }) {
               </div>
 
               <p className="text-white text-xl md:text-2xl font-medium leading-relaxed mb-6">
-                "{current.quote}"
+                &quot;{current.quote}&quot;
               </p>
 
               <p className="text-white/60 text-sm">

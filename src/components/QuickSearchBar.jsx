@@ -3,6 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Calendar, Users, Search, Plus, Minus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { hotelInfo } from '@/data/hotelData';
 
 const MONTH_NAMES = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -123,9 +124,8 @@ export default function QuickSearchBar() {
 
 Could you let me know what's available for these dates?`;
 
-        const whatsappNumber = '919635320549';
         const encodedMessage = encodeURIComponent(message);
-        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        const whatsappUrl = `https://wa.me/${hotelInfo.whatsappNumber}?text=${encodedMessage}`;
 
         window.open(whatsappUrl, '_blank');
     };

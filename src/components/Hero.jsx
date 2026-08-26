@@ -3,6 +3,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
 import { heroFinal, hotelInfo } from '@/data/hotelData';
 import QuickSearchBar from './QuickSearchBar';
 
@@ -48,10 +50,13 @@ export default function Hero() {
           y: offset.y * -12,
         }}
       >
-        <img
+        <Image
           src={isNight ? heroFinal.night : heroFinal.day}
           alt={hotelInfo.name}
-          className="w-full h-full object-cover scale-110 transition-opacity duration-700"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover scale-110 transition-opacity duration-700"
         />
       </motion.div>
 
@@ -98,9 +103,12 @@ export default function Hero() {
           transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="flex items-center gap-4 mb-10"
         >
-          <button className="bg-white text-gray-900 px-8 py-3.5 rounded-full font-medium hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all">
+          <Link
+            href="/#booking"
+            className="bg-white text-gray-900 px-8 py-3.5 rounded-full font-medium hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all"
+          >
             Book Now
-          </button>
+          </Link>
           <button
             onClick={() => setIsNight((v) => !v)}
             className="border border-white/40 text-white px-6 py-3.5 rounded-full text-sm hover:bg-white/10 hover:scale-105 active:scale-95 transition-all"

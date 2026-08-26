@@ -1,19 +1,39 @@
 // src/app/rooms/[slug]/page.js
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Users, Maximize, Check } from 'lucide-react';
 import { getRoomBySlug, getRooms } from '@/lib/appwrite';
 
+export const revalidate = 60;
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const room = await getRoomBySlug(slug);
+
+  if (!room) {
+    return { title: 'Room Not Found' };
+  }
+
+  return {
+    title: room.name,
+    description: room.description,
+    openGraph: {
+      title: room.name,
+      description: room.description,
+      images: [room.image],
+    },
+  };
+}
+
 export default async function RoomDetailPage({ params }) {
   const { slug } = await params;
 
-  const rawRoom = await getRoomBySlug(slug);
+  const [rawRoom, rawAllRooms] = await Promise.all([getRoomBySlug(slug), getRooms()]);
   if (!rawRoom) {
     notFound();
   }
   const room = JSON.parse(JSON.stringify(rawRoom));
-
-  const rawAllRooms = await getRooms();
   const allRooms = JSON.parse(JSON.stringify(rawAllRooms));
   const otherRooms = allRooms.filter((r) => r.slug !== slug).slice(0, 2);
 
@@ -21,7 +41,7 @@ export default async function RoomDetailPage({ params }) {
     <main className="min-h-screen bg-white pt-28 pb-20">
       {/* Hero image */}
       <div className="relative w-full h-[50vh] md:h-[60vh] overflow-hidden">
-        <img src={room.image} alt={room.name} className="w-full h-full object-cover" />
+        <Image src={room.image} alt={room.name} fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
         <div className="absolute bottom-8 left-0 right-0 px-6">
           <div className="max-w-6xl mx-auto">
@@ -46,7 +66,7 @@ export default async function RoomDetailPage({ params }) {
 
           <p className="text-gray-700 text-lg leading-relaxed mb-10">{room.description}</p>
 
-          <h2 className="text-xl font-semibold text-gray-900 mb-5">What's Included</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-5">What&apos;s Included</h2>
           <div className="grid grid-cols-2 gap-4">
             {room.amenities.map((a) => (
               <div key={a} className="flex items-center gap-3 text-gray-700">
@@ -83,10 +103,12 @@ export default async function RoomDetailPage({ params }) {
             {otherRooms.map((r) => (
               <Link key={r.slug} href={`/rooms/${r.slug}`} className="group block">
                 <div className="relative overflow-hidden rounded-2xl mb-4 aspect-[16/10]">
-                  <img
+                  <Image
                     src={r.image}
                     alt={r.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                 </div>
                 <div className="flex items-center justify-between">

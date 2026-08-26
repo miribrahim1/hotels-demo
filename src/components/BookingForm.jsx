@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { Calendar, Users, Mail, Phone, User, CheckCircle2 } from 'lucide-react';
+import { hotelInfo } from '@/data/hotelData';
+import { submitBooking } from '@/lib/actions';
 
 export default function BookingForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -25,9 +27,11 @@ Guests: ${data.guests}
 Check-in: ${data.checkIn}
 Check-out: ${data.checkOut}`;
 
-    const whatsappNumber = '919635320549'; // replace with your real WhatsApp business number
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${hotelInfo.whatsappNumber}?text=${encodedMessage}`;
+
+    // Save to Appwrite in the background — don't block the WhatsApp handoff on it
+    submitBooking(data).catch(() => {});
 
     window.open(whatsappUrl, '_blank');
 
@@ -139,7 +143,7 @@ Check-out: ${data.checkOut}`;
               animate={{ opacity: 1 }}
               className="text-center text-sm text-green-600"
             >
-              Thank you! We'll get back to you shortly to confirm your stay.
+              Thank you! We&apos;ll get back to you shortly to confirm your stay.
             </motion.p>
           )}
         </motion.form>

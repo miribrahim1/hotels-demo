@@ -22,7 +22,7 @@ export default function Amenities({ amenitiesList }) {
             Amenities
           </span>
           <h2 className="text-3xl md:text-5xl font-semibold text-gray-900">
-            Everything You Need, Nothing You Don't
+            Everything You Need, Nothing You Don&apos;t
           </h2>
         </motion.div>
 

@@ -7,15 +7,18 @@ import Highlights from '@/components/Highlights';
 import RoomsPreview from '@/components/RoomsPreview';
 import Testimonials from '@/components/Testimonials';
 import { getRooms, getAmenities, getTestimonials } from '@/lib/appwrite';
+
+export const revalidate = 60;
+
 export default async function Home() {
 
-  const rowRooms = await getRooms();
+  const [rowRooms, rawAmenities, rawTestimonials] = await Promise.all([
+    getRooms(),
+    getAmenities(),
+    getTestimonials(),
+  ]);
   const rooms = JSON.parse(JSON.stringify(rowRooms));
-
-  const rawAmenities = await getAmenities();
   const amenities = JSON.parse(JSON.stringify(rawAmenities));
-
-  const rawTestimonials = await getTestimonials();
   const testimonials = JSON.parse(JSON.stringify(rawTestimonials));
 
   return (

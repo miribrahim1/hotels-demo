@@ -1,5 +1,11 @@
 // src/app/gallery/page.js
+import Image from 'next/image';
 import { heroJourney } from '@/data/hotelData';
+
+export const metadata = {
+  title: 'Gallery',
+  description: 'A closer look at The Verandah — from the entrance to the evenings by the pool.',
+};
 
 export default function GalleryPage() {
   return (
@@ -20,10 +26,12 @@ export default function GalleryPage() {
                 i === 0 ? 'col-span-2 row-span-2' : ''
               }`}
             >
-              <img
+              <Image
                 src={img.image}
                 alt={img.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                fill
+                sizes={i === 0 ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 50vw, 33vw'}
+                className="object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
               <span className="absolute bottom-4 left-4 text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
