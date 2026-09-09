@@ -21,7 +21,7 @@ export default async function AmenitiesPage() {
   const amenitiesList = JSON.parse(JSON.stringify(rawAmenities));
 
   return (
-    <main className="min-h-screen bg-white">
+    <main id="main-content" className="min-h-screen bg-white">
       {/* Page header */}
       <div className="pt-40 pb-20 px-6 text-center">
         <span className="text-gray-400 text-sm tracking-[0.3em] uppercase mb-4 block">
@@ -34,6 +34,7 @@ export default async function AmenitiesPage() {
 
       {/* Alternating rows */}
       <div className="max-w-6xl mx-auto px-6 pb-24">
+        {amenitiesList.length === 0 && <p role="status" className="text-center text-gray-600">Amenities are temporarily unavailable. Please refresh and try again shortly.</p>}
         {amenitiesList.map((item, i) => {
           const Icon = ICONS[i % ICONS.length];
           const img = AMENITY_IMAGES[i % AMENITY_IMAGES.length];

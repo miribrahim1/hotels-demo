@@ -1,6 +1,6 @@
 export default function RoomsLoading() {
   return (
-    <main className="min-h-screen bg-white pt-32 pb-20 px-6">
+    <main id="main-content" className="min-h-screen bg-white pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <div className="h-12 md:h-16 w-64 bg-gray-100 rounded-xl mx-auto animate-pulse" />

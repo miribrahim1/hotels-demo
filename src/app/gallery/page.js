@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function GalleryPage() {
   return (
-    <main className="min-h-screen bg-white pt-32 pb-20 px-6">
+    <main id="main-content" className="min-h-screen bg-white pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-semibold text-gray-900">Gallery</h1>
@@ -22,7 +22,7 @@ export default function GalleryPage() {
           {heroJourney.map((img, i) => (
             <div
               key={img.id}
-              className={`relative overflow-hidden rounded-2xl group cursor-pointer ${
+              className={`relative overflow-hidden rounded-2xl group ${
                 i === 0 ? 'col-span-2 row-span-2' : ''
               }`}
             >

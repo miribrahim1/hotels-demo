@@ -1,4 +1,5 @@
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+import { resolveSiteUrl } from '@/lib/site-config.mjs';
+const siteUrl = resolveSiteUrl();
 
 export default function robots() {
   return {

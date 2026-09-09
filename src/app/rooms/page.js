@@ -15,7 +15,7 @@ export default async function RoomsPage() {
   const rooms = JSON.parse(JSON.stringify(rawRooms));
 
   return (
-    <main className="min-h-screen bg-white pt-32 pb-20 px-6">
+    <main id="main-content" className="min-h-screen bg-white pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-semibold text-gray-900">Our Rooms</h1>
@@ -24,6 +24,7 @@ export default async function RoomsPage() {
           </p>
         </div>
 
+        {rooms.length === 0 && <p role="status" className="text-center text-gray-600">Rooms are temporarily unavailable. Please refresh and try again shortly.</p>}
         <div className="grid md:grid-cols-3 gap-8">
           {rooms.map((room) => (
             <Link key={room.slug} href={`/rooms/${room.slug}`} className="group block">

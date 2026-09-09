@@ -2,6 +2,7 @@
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { hotelInfo } from '@/data/hotelData';
 import ContactForm from '@/components/ContactForm';
+import { isDemo } from '@/lib/site-config.mjs';
 
 export const metadata = {
   title: 'Contact',
@@ -10,12 +11,12 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-white pt-32 pb-20 px-6">
+    <main id="main-content" className="min-h-screen bg-white pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-semibold text-gray-900">Get in Touch</h1>
           <p className="text-gray-500 mt-4 max-w-md mx-auto">
-            Have a question, or planning a stay? We&apos;d love to hear from you.
+            {isDemo ? 'Explore a sample hotel contact page. The address, phone and email below are demonstration details.' : 'Have a question, or planning a stay? We would love to hear from you.'}
           </p>
         </div>
 

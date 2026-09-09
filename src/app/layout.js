@@ -1,7 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import PageLoader from "@/components/PageLoader";
+import Footer from "@/components/Footer";
+import { isDemo, resolveSiteUrl } from "@/lib/site-config.mjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,10 +14,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = resolveSiteUrl();
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
+  robots: isDemo ? { index: false, follow: true } : undefined,
   title: {
     default: "The Verandah | Boutique Hotel in Shantiniketan",
     template: "%s | The Verandah",
@@ -56,9 +58,10 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <PageLoader />
+        <a href="#main-content" className="skip-link">Skip to content</a>
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

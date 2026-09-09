@@ -1,8 +1,9 @@
 // src/components/Hero.jsx
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from 'framer-motion';
+import { isDemo } from '@/lib/site-config.mjs';
 import Link from 'next/link';
 import Image from 'next/image';
 import { heroFinal, hotelInfo } from '@/data/hotelData';
@@ -10,35 +11,23 @@ import QuickSearchBar from './QuickSearchBar';
 
 export default function Hero() {
   const [isNight, setIsNight] = useState(false);
-  const mouse = useRef({ x: 0, y: 0 });
-  const smooth = useRef({ x: 0, y: 0 });
-  const rafRef = useRef(null);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const reduceMotion = useReducedMotion();
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const smoothX = useSpring(pointerX, { stiffness: 70, damping: 25 });
+  const smoothY = useSpring(pointerY, { stiffness: 70, damping: 25 });
+  const backgroundX = useTransform(smoothX, (value) => value * -18);
+  const backgroundY = useTransform(smoothY, (value) => value * -12);
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-      mouse.current = { x, y };
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-
-    const loop = () => {
-      smooth.current.x += (mouse.current.x - smooth.current.x) * 0.06;
-      smooth.current.y += (mouse.current.y - smooth.current.y) * 0.06;
-      setOffset({ x: smooth.current.x, y: smooth.current.y });
-      rafRef.current = requestAnimationFrame(loop);
-    };
-    rafRef.current = requestAnimationFrame(loop);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
+  const move = (event) => {
+    if (reduceMotion || event.pointerType !== 'mouse') return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    pointerX.set(((event.clientX - bounds.left) / bounds.width - 0.5) * 2);
+    pointerY.set(((event.clientY - bounds.top) / bounds.height - 0.5) * 2);
+  };
 
   return (
-    <section id="hero-section" className="relative h-screen w-full overflow-hidden bg-black">
+    <section id="hero-section" onPointerMove={move} onPointerLeave={() => { pointerX.set(0); pointerY.set(0); }} className="relative min-h-[max(680px,100svh)] w-full overflow-hidden bg-black">
       {/* Background image */}
       <motion.div
         className="absolute inset-0"
@@ -46,8 +35,8 @@ export default function Hero() {
         initial={{ scale: 1.15 }}
         transition={{ duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          x: offset.x * -18,
-          y: offset.y * -12,
+          x: backgroundX,
+          y: backgroundY,
         }}
       >
         <Image
@@ -64,11 +53,7 @@ export default function Hero() {
 
       {/* Foreground content */}
       <motion.div
-        className="relative h-full w-full flex flex-col items-center justify-center text-center px-5 pt-16 pb-10"
-        style={{
-          x: offset.x * 8,
-          y: offset.y * 6,
-        }}
+        className="relative min-h-[max(680px,100svh)] w-full flex flex-col items-center justify-center text-center px-5 pt-32 pb-12"
       >
         <motion.span
           initial={{ opacity: 0, y: 16 }}
@@ -76,7 +61,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="text-white/70 text-sm tracking-[0.3em] uppercase mb-4"
         >
-          Shantiniketan, West Bengal
+          {isDemo ? 'Boutique Hotel · Portfolio Concept' : 'Shantiniketan, West Bengal'}
         </motion.span>
 
         <motion.h1
@@ -101,7 +86,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="flex items-center gap-4 mb-10"
+          className="flex flex-wrap justify-center items-center gap-3 mb-10"
         >
           <Link
             href="/#booking"
@@ -110,6 +95,7 @@ export default function Hero() {
             Book Now
           </Link>
           <button
+            aria-pressed={isNight}
             onClick={() => setIsNight((v) => !v)}
             className="border border-white/40 text-white px-6 py-3.5 rounded-full text-sm hover:bg-white/10 hover:scale-105 active:scale-95 transition-all"
           >

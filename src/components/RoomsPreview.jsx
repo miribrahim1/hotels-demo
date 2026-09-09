@@ -35,6 +35,7 @@ export default function RoomsPreview({ rooms }) {
         </motion.div>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {preview.length === 0 && <p role="status" className="text-gray-600">Rooms are temporarily unavailable. Please try again shortly.</p>}
           {preview.map((room, i) => (
             <RoomCard key={room.slug} room={room} index={i} />
           ))}
@@ -91,9 +92,9 @@ function RoomCard({ room, index }) {
 
           {/* Bottom content */}
           <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
-            <div className="flex items-end justify-between mb-2">
+            <div className="flex flex-col items-start gap-2 mb-2">
               <h3 className="text-white text-xl md:text-2xl font-semibold">{room.name}</h3>
-              <p className="text-white text-lg font-semibold whitespace-nowrap ml-4">
+              <p className="text-white text-lg font-semibold whitespace-nowrap">
                 ₹{room.price.toLocaleString('en-IN')}
                 <span className="text-white/60 text-xs font-normal">/night</span>
               </p>

@@ -1,7 +1,7 @@
 // src/components/Navbar.jsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,6 +21,8 @@ export default function Navbar() {
 
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef(null);
+    const openButtonRef = useRef(null);
     const isSolid = !isHome || scrolled; // always solid on inner pages, scroll-based on home
 
     useEffect(() => {
@@ -34,12 +36,36 @@ export default function Navbar() {
                 setScrolled(true);
                 return;
             }
-            setScrolled(hero.getBoundingClientRect().bottom <= 0);
+            setScrolled(hero.getBoundingClientRect().bottom <= 90);
         };
         window.addEventListener('scroll', handleScroll);
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isHome]);
+
+    useEffect(() => {
+        if (!menuOpen) return;
+        const previousOverflow = document.body.style.overflow;
+        const opener = openButtonRef.current;
+        document.body.style.overflow = 'hidden';
+        menuRef.current?.querySelector('button')?.focus();
+        const handleKey = (event) => {
+            if (event.key === 'Escape') setMenuOpen(false);
+            if (event.key !== 'Tab') return;
+            const items = menuRef.current?.querySelectorAll('a, button');
+            if (!items?.length) return;
+            const first = items[0];
+            const last = items[items.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+            if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        };
+        document.addEventListener('keydown', handleKey);
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            document.removeEventListener('keydown', handleKey);
+            opener?.focus();
+        };
+    }, [menuOpen]);
 
     return (
         <>
@@ -100,6 +126,9 @@ export default function Navbar() {
                             onClick={() => setMenuOpen(true)}
                             className={`md:hidden transition-transform hover:scale-110 ${isSolid ? 'text-gray-900' : 'text-white'
                                 }`}
+                            ref={openButtonRef}
+                            aria-expanded={menuOpen}
+                            aria-controls="mobile-menu"
                             aria-label="Open menu"
                         >
                             <Menu size={22} />
@@ -114,7 +143,12 @@ export default function Navbar() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[200] bg-white flex flex-col"
+                        id="mobile-menu"
+                        ref={menuRef}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Navigation menu"
+                        className="fixed inset-0 z-[200] bg-white flex flex-col overflow-y-auto"
                     >
                         <div className="flex items-center justify-between px-5 py-5">
                             <span className="text-xl font-semibold text-gray-900">{hotelInfo.name}</span>

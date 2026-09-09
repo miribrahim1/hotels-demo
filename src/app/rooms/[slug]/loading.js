@@ -1,6 +1,6 @@
 export default function RoomDetailLoading() {
   return (
-    <main className="min-h-screen bg-white pt-28 pb-20">
+    <main id="main-content" className="min-h-screen bg-white pt-28 pb-20">
       <div className="w-full h-[50vh] md:h-[60vh] bg-gray-100 animate-pulse" />
       <div className="max-w-6xl mx-auto px-6 mt-12 grid md:grid-cols-3 gap-12">
         <div className="md:col-span-2 space-y-4">

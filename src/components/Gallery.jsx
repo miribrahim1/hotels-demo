@@ -34,7 +34,7 @@ export default function Gallery() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: (i % 3) * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative overflow-hidden rounded-2xl group cursor-pointer ${
+              className={`relative overflow-hidden rounded-2xl group ${
                 i === 0 ? 'col-span-2 row-span-2' : ''
               }`}
             >

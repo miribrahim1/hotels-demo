@@ -4,18 +4,22 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
+import { isDemo } from '@/lib/site-config.mjs';
 
 export default function Testimonials({ testimonials }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    if (testimonials.length === 0) return;
     const timer = setInterval(() => {
       setIndex((i) => (i + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(timer);
   }, [testimonials.length]);
 
-  const current = testimonials[index];
+  if (testimonials.length === 0) return null;
+
+  const current = testimonials[index % testimonials.length];
 
   return (
     <section className="bg-gray-900 py-24 px-6">
@@ -30,7 +34,7 @@ export default function Testimonials({ testimonials }) {
           <span className="text-sm font-medium text-white/50 tracking-wide uppercase mb-2">
             Testimonials
           </span>
-          <h2 className="text-3xl md:text-5xl font-semibold text-white">What Guests Say</h2>
+          <h2 className="text-3xl md:text-5xl font-semibold text-white">{isDemo ? 'Sample Guest Reviews' : 'What Guests Say'}</h2>
         </motion.div>
 
         <div className="relative min-h-[220px] flex items-center justify-center">

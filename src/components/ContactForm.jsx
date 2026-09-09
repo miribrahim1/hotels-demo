@@ -1,104 +1,50 @@
-// src/components/ContactForm.jsx
 'use client';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { CheckCircle2 } from 'lucide-react';
-import { hotelInfo } from '@/data/hotelData';
 import { submitContactMessage } from '@/lib/actions';
+import { enquiryResolver } from '@/lib/validation.mjs';
+import { isDemo } from '@/lib/site-config.mjs';
+import FormField, { Honeypot, inputClass } from './FormField';
+import EnquiryResult from './EnquiryResult';
 
 export default function ContactForm() {
-  const [submitted, setSubmitted] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
+  const [result, setResult] = useState(null);
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm({ resolver: enquiryResolver('contact') });
 
-  const onSubmit = (data) => {
-    const message = `Hi The Verandah! I have a question.
-
-Name: ${data.name}
-Email: ${data.email}
-
-Message: ${data.message}`;
-
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${hotelInfo.whatsappNumber}?text=${encodedMessage}`;
-
-    // Save to Appwrite in the background — don't block the WhatsApp handoff on it
-    submitContactMessage(data).catch(() => {});
-
-    window.open(whatsappUrl, '_blank');
-
-    setSubmitted(true);
-    reset();
-    setTimeout(() => setSubmitted(false), 4000);
+  const onSubmit = async (data) => {
+    setResult(null);
+    try {
+      const response = await submitContactMessage(data);
+      if (!response.success) {
+        Object.entries(response.errors || {}).forEach(([field, message]) => setError(field, { message }, { shouldFocus: true }));
+        setResult(response);
+        return;
+      }
+      setResult({ ...response,
+        draft: `Hi The Verandah! I have a question.\n\nName: ${data.name}\nEmail: ${data.email}\n\nMessage: ${data.message}`,
+        message: response.demo ? 'Demo complete. Your message was validated; no personal details were saved and no message was sent.' : 'Your enquiry was saved. You can also follow up on WhatsApp.',
+      });
+    } catch {
+      setResult({ success: false, message: 'Connection interrupted. Your message is still here. Please try again.' });
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="bg-gray-50 rounded-3xl p-6 md:p-8 space-y-5">
-      <Field
-        label="Full Name"
-        error={errors.name}
-        inputProps={register('name', { required: 'Name is required' })}
-        placeholder="Your name"
-      />
-      <Field
-        label="Email"
-        type="email"
-        error={errors.email}
-        inputProps={register('email', {
-          required: 'Email is required',
-          pattern: { value: /^\S+@\S+\.\S+$/, message: 'Enter a valid email' },
-        })}
-        placeholder="you@example.com"
-      />
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">Message</label>
-        <textarea
-          rows={5}
-          placeholder="How can we help?"
-          {...register('message', { required: 'Message is required' })}
-          className={`w-full px-4 py-3 rounded-xl border bg-white text-gray-900 text-sm resize-none focus:outline-none focus:ring-2 transition-all ${
-            errors.message ? 'border-red-300 focus:ring-red-200' : 'border-gray-200 focus:ring-gray-900/10'
-          }`}
-        />
-        {errors.message && (
-          <p className="text-xs text-red-500 mt-1">{errors.message.message}</p>
-        )}
-      </div>
-
-      <button
-        type="submit"
-        className="w-full bg-gray-900 text-white py-3.5 rounded-full font-medium hover:bg-gray-800 hover:scale-[1.01] active:scale-[0.99] transition-all"
-      >
-        {submitted ? (
-          <span className="flex items-center justify-center gap-2">
-            <CheckCircle2 size={18} /> Message Sent
-          </span>
-        ) : (
-          'Send Message'
-        )}
-      </button>
+    <form noValidate onSubmit={handleSubmit(onSubmit, () => setResult(null))} onChange={() => setResult(null)} className="bg-gray-50 rounded-3xl p-6 md:p-8 space-y-5">
+      {isDemo && <p className="text-sm text-gray-600">Try this form with sample details. This portfolio demo does not save or send messages.</p>}
+      <fieldset disabled={isSubmitting} className="space-y-5">
+        <Honeypot register={register} id="contact-website" />
+        <FormField label="Full Name" id="contact-name" error={errors.name} autoComplete="name" maxLength={100} {...register('name')} />
+        <FormField label="Email" id="contact-email" type="email" error={errors.email} autoComplete="email" maxLength={254} {...register('email')} />
+        <FormField label="Message" id="contact-message" error={errors.message}>
+          <textarea id="contact-message" rows={5} maxLength={2000} placeholder="How can we help?" className={`${inputClass} resize-y`} aria-invalid={!!errors.message} aria-describedby={errors.message ? 'contact-message-error' : undefined} {...register('message')} />
+        </FormField>
+        <button type="submit" disabled={isSubmitting || !!result?.success} className="w-full bg-gray-900 text-white py-3.5 rounded-full font-medium hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+          {isSubmitting ? 'Checking your message…' : result?.success ? (result.demo ? 'Demo Complete' : 'Enquiry Saved') : isDemo ? 'Preview Message' : 'Send Enquiry'}
+        </button>
+      </fieldset>
+      <EnquiryResult result={result} />
     </form>
-  );
-}
-
-function Field({ label, type = 'text', error, inputProps, placeholder }) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
-      <input
-        type={type}
-        placeholder={placeholder}
-        {...inputProps}
-        className={`w-full px-4 py-3 rounded-xl border bg-white text-gray-900 text-sm focus:outline-none focus:ring-2 transition-all ${
-          error ? 'border-red-300 focus:ring-red-200' : 'border-gray-200 focus:ring-gray-900/10'
-        }`}
-      />
-      {error && <p className="text-xs text-red-500 mt-1">{error.message}</p>}
-    </div>
   );
 }

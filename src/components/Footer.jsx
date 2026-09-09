@@ -1,19 +1,14 @@
 // src/components/Footer.jsx
 import Link from 'next/link';
-import { MapPin, Phone, Mail, Share2, Link2, AtSign } from 'lucide-react';
+import { MapPin, Phone, Mail } from 'lucide-react';
 import { hotelInfo } from '@/data/hotelData';
+import { isDemo } from '@/lib/site-config.mjs';
 
 const QUICK_LINKS = [
   { label: 'Rooms', href: '/rooms' },
   { label: 'Amenities', href: '/amenities' },
   { label: 'Gallery', href: '/gallery' },
   { label: 'Contact', href: '/contact' },
-];
-
-const SOCIALS = [
-  { icon: Share2, href: '#' },
-  { icon: Link2, href: '#' },
-  { icon: AtSign, href: '#' },
 ];
 
 export default function Footer() {
@@ -27,22 +22,12 @@ export default function Footer() {
             <p className="text-white/60 text-sm leading-relaxed max-w-sm">
               {hotelInfo.description}
             </p>
-            <div className="flex gap-3 mt-6">
-              {SOCIALS.map((s, i) => (
-               <a 
-                  key={i}
-                  href={s.href}
-                  className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-                >
-                  <s.icon size={16} />
-                </a>
-              ))}
-            </div>
+            {isDemo && <p className="mt-5 text-sm text-white/70">Portfolio concept by @codebymir. Sample hotel details, imagery and guest reviews; no real reservations.</p>}
           </div>
 
           {/* Quick links */}
           <div>
-            <h4 className="text-sm font-semibold text-white/40 uppercase tracking-wide mb-4">
+            <h4 className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-4">
               Explore
             </h4>
             <ul className="space-y-3">
@@ -58,7 +43,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-sm font-semibold text-white/40 uppercase tracking-wide mb-4">
+            <h4 className="text-sm font-semibold text-white/60 uppercase tracking-wide mb-4">
               Contact
             </h4>
             <ul className="space-y-3 text-sm text-white/70">
@@ -78,9 +63,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/40">
+        <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/60">
           <p>© {new Date().getFullYear()} {hotelInfo.name}. All rights reserved.</p>
-          <p>Designed & built by @codebymir</p>
+          <a href="https://github.com/miribrahim1" target="_blank" rel="noopener noreferrer" className="hover:text-white underline underline-offset-4">Designed & built by @codebymir</a>
         </div>
       </div>
     </footer>

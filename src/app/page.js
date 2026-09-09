@@ -1,6 +1,6 @@
 import Amenities from '@/components/Amenities';
 import BookingForm from '@/components/BookingForm';
-import Footer from '@/components/Footer';
+import { Suspense } from 'react';
 import Gallery from '@/components/Gallery';
 import Hero from '@/components/Hero';
 import Highlights from '@/components/Highlights';
@@ -22,15 +22,16 @@ export default async function Home() {
   const testimonials = JSON.parse(JSON.stringify(rawTestimonials));
 
   return (
-    <main>
+    <main id="main-content">
       <Hero />
       <Highlights />
       <RoomsPreview rooms={rooms} />
       <Amenities amenitiesList={amenities} />
       <Gallery />
       <Testimonials testimonials={testimonials} />
-      <BookingForm />
-      <Footer />
+      <Suspense fallback={<section id="booking" className="py-24 text-center text-gray-700 bg-gray-50">Loading booking form…</section>}>
+        <BookingForm rooms={rooms} />
+      </Suspense>
     </main>
   );
 }

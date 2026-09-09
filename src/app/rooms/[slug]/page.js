@@ -38,7 +38,7 @@ export default async function RoomDetailPage({ params }) {
   const otherRooms = allRooms.filter((r) => r.slug !== slug).slice(0, 2);
 
   return (
-    <main className="min-h-screen bg-white pt-28 pb-20">
+    <main id="main-content" className="min-h-screen bg-white pt-28 pb-20">
       {/* Hero image */}
       <div className="relative w-full h-[50vh] md:h-[60vh] overflow-hidden">
         <Image src={room.image} alt={room.name} fill priority sizes="100vw" className="object-cover" />
@@ -87,7 +87,7 @@ export default async function RoomDetailPage({ params }) {
             </p>
             <p className="text-sm text-gray-500 mb-6">Inclusive of taxes</p>
             <Link
-              href="/#booking"
+              href={`/?room=${encodeURIComponent(room.slug)}#booking`}
               className="block text-center bg-gray-900 text-white py-3.5 rounded-full font-medium hover:bg-gray-800 hover:scale-[1.01] active:scale-[0.99] transition-all"
             >
               Book This Room
